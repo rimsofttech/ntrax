@@ -11,8 +11,8 @@
         <script src="{{ URL::asset('assets/libs/bootstrap-select/bootstrap-select.min.js')}}"></script>
         <script src="{{ URL::asset('assets/libs/bootstrap-touchspin/bootstrap-touchspin.min.js')}}"></script>
         <script src="{{ URL::asset('assets/libs/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script>
+        <script src="{{ URL::asset('assets/js/toastr.js')}}}}"></script>
         <script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
-        
         <!-- Init js-->
         <script src="{{ URL::asset('assets/js/pages/form-advanced.init.js')}}"></script>
         <!-- App js -->

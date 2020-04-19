@@ -22,15 +22,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(["prefix" => "admin", "namespace" => "Admin",'middleware' => 'auth'], function () {
 
-    /******************************Zone */
-
-    Route::resource('zone','ZoneController');
-    Route::post('zone/update', 'ZoneController@update')->name('zone.update');
-    Route::get('zone/destroy/{id}', 'ZoneController@destroy');
-    Route::get('/search-country/{keyword?}', 'ZoneController@searchCountry')->name('search.country');
-    Route::get('/search-state/{keyword?}', 'ZoneController@searchState')->name('search.state');
-    Route::get('/search-city/{keyword?}', 'ZoneController@searchCity')->name('search.city');
-
     /********************************Role */
 
     Route::resource('role','RoleController');
@@ -50,4 +41,19 @@ Route::group(["prefix" => "admin", "namespace" => "Admin",'middleware' => 'auth'
     Route::post('user/update', 'UserController@update')->name('user.update');
     Route::get('user/destroy/{id}', 'UserController@destroy');
     Route::get('/search-role', 'UserController@searchRole')->name('search.role');
+
+    /******************************Zone */
+
+    Route::resource('zone','ZoneController');
+    Route::post('zone/update', 'ZoneController@update')->name('zone.update');
+    Route::get('zone/destroy/{id}', 'ZoneController@destroy');
+    Route::get('/search-country/{keyword?}', 'ZoneController@searchCountry')->name('search.country');
+    Route::get('/search-state/{keyword?}', 'ZoneController@searchState')->name('search.state');
+    Route::get('/search-city/{keyword?}', 'ZoneController@searchCity')->name('search.city');
+
+    /******************************Channel Patner */
+
+    Route::resource('channelpartner','ChannelPartnerController');
+    Route::post('channelpartner/update', 'ChannelPartnerController@update')->name('channelpartner.update');
+    Route::get('channelpartner/destroy/{id}', 'ChannelPartnerController@destroy');
 });

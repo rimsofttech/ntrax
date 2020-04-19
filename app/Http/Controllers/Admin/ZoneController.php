@@ -9,6 +9,7 @@ use App\Models\Country;
 use App\Models\State;
 use App\Models\Zone;
 use App\Ntrax\Repositories\Zone\ZoneInterface;
+use App\Http\Requests\Zone\IndexZoneRequest;
 use DataTables;
 use Validator;
 
@@ -30,7 +31,7 @@ class ZoneController extends Controller
          $this->state = $state;
          $this->city = $city;
      }
-    public function index(Request $request)
+    public function index(IndexZoneRequest $request)
     {
         if ($request->ajax()) {
          return   $zones = $this->zone->getallzonesdetails($request);
