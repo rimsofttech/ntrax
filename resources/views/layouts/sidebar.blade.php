@@ -24,7 +24,7 @@
                         </li>
                         @endif
                         <li>
-                            <a href="dashboard-2">Dashboard 2</a>
+                            <a href="">Dashboard 2</a>
                         </li>
                     </ul>
                 </li>

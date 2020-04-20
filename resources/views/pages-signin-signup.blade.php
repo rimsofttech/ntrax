@@ -95,6 +95,6 @@
         <!-- end page -->
 
         <footer class="footer footer-alt">
-            2015 - {{date('Y')}} &copy; UBold theme by <a href="" class="text-white-50">Coderthemes</a> 
+            2019 - {{date('Y')}} &copy; Design and Developed by <a href="http://rimsofttech.com">Rim Softtech</a> 
         </footer>
 @endsection

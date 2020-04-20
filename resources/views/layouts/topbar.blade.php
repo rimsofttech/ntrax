@@ -110,9 +110,9 @@
 
         <li class="dropdown notification-list">
             <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                <img src="assets/images/users/user-1.jpg" alt="user-image" class="rounded-circle">
+                <img src="{{asset('assets/images/users/user-11.jpg')}}" alt="user-image" class="rounded-circle">
                 <span class="pro-user-name ml-1">
-                    Geneva <i class="mdi mdi-chevron-down"></i> 
+                    {{Auth::user()->name}} <i class="mdi mdi-chevron-down"></i> 
                 </span>
             </a>
             <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
@@ -145,6 +145,7 @@
                 <a class="dropdown-item" href="{{ route('logout') }}"
                             onclick="event.preventDefault();
                                           document.getElementById('logout-form').submit();">
+                                          <i class="icon-logout"></i>
                              {{ __('Logout') }}
                          </a>
 
@@ -168,12 +169,14 @@
     <div class="logo-box">
         <a href="index" class="logo text-center">
             <span class="logo-lg">
-                <img src="assets/images/logo-light.png" alt="" height="18">
+                {{-- <img src="assets/images/logo-light.png" alt="" height="18"> --}}
+                <h3 class="mt-3 text-white">Ntrax</h3>
                 <!-- <span class="logo-lg-text-light">UBold</span> -->
             </span>
             <span class="logo-sm">
                 <!-- <span class="logo-sm-text-dark">U</span> -->
-                <img src="assets/images/logo-sm.png" alt="" height="24">
+                {{-- <img src="assets/images/logo-sm.png" alt="" height="24"> --}}
+                <h3 class="mt-3 text-white">Ntrax</h3>
             </span>
         </a>
     </div>

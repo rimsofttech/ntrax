@@ -16,7 +16,7 @@
                                 
                                 <div class="text-center w-75 m-auto">
                                     <a href="index">
-                                        <span><img src="assets/images/logo-dark.png" alt="" height="22"> {{ __('Login') }}</span>
+                                        <span><h1><b>N</b>Trax</h1></span>
                                     </a>
                                     <p class="text-muted mb-4 mt-3">Enter your email address and password to access admin panel.</p>
                                 </div>
@@ -102,6 +102,6 @@
 
 
         <footer class="footer footer-alt">
-            2015 - {{date('Y')}} &copy; UBold theme by <a href="" class="text-white-50">Coderthemes</a> 
+            2019 - {{date('Y')}} &copy; Design and Developed by <a href="http://rimsofttech.com" class="text-white">Rim Softtech</a> 
         </footer>
 @endsection

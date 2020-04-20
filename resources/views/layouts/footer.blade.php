@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-6">
-                2015 - {{date('Y')}} &copy; UBold theme by <a href="">Coderthemes</a> 
+                2019 - {{date('Y')}} &copy; Design and Developed by <a href="http://rimsofttech.com">Rim Softtech</a> 
             </div>
             <div class="col-md-6">
                 <div class="text-md-right footer-links d-none d-sm-block">

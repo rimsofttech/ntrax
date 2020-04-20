@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('index');
+    return view('/admin/zone/index');
 });
 
 // Route::get('{any}', 'UboldController@index');
