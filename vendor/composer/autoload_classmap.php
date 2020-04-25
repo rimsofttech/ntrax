@@ -61,6 +61,8 @@ return array(
     'App\\Models\\Country' => $baseDir . '/app/Models/Country.php',
     'App\\Models\\State' => $baseDir . '/app/Models/State.php',
     'App\\Models\\Zone' => $baseDir . '/app/Models/Zone.php',
+    'App\\Ntrax\\Repositories\\ChannelPartner\\ChannelPartnerInterface' => $baseDir . '/app/Ntrax/Repositories/ChannelPartner/ChannelPartnerInterface.php',
+    'App\\Ntrax\\Repositories\\ChannelPartner\\ChannelPartnerRepository' => $baseDir . '/app/Ntrax/Repositories/ChannelPartner/ChannelPartnerRepository.php',
     'App\\Ntrax\\Repositories\\Permission\\PermissionInterface' => $baseDir . '/app/Ntrax/Repositories/Permission/PermissionInterface.php',
     'App\\Ntrax\\Repositories\\Permission\\PermissionRepository' => $baseDir . '/app/Ntrax/Repositories/Permission/PermissionRepository.php',
     'App\\Ntrax\\Repositories\\Role\\RoleInterface' => $baseDir . '/app/Ntrax/Repositories/Role/RoleInterface.php',

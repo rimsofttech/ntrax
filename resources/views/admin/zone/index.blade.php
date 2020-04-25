@@ -39,9 +39,11 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-sm-4">
+                                                @permission('Create Zone')
                                                 <button type="button" class="btn btn-primary" data-toggle="modal"  name="create_record" id="create_record">
                                                     <i class="mdi mdi-plus-circle mr-1"></i> Add Zone
                                                   </button>
+                                                @endpermission
                                             </div>
                                         </div>
                                         <div class="row">&nbsp;</div>
@@ -234,6 +236,8 @@
        
        <script>
         $(document).ready(function(){
+        //  var onecolumn =   {{ \Entrust::can('Edit Zone') ? 'true' : 'false' }};
+        //  alert(onecolumn);
          $('.fetchdata').DataTable({
           processing: true,
           serverSide: true,
@@ -243,6 +247,7 @@
            url: "{{ route('zone.index') }}",
           },
         //   data: data,
+        
           columns:[
            {
             data: 'zonename',
@@ -278,6 +283,12 @@
             searchable: false
            }
           ],
+    //       columnDefs: [
+    //     {
+    //         "targets": [ 2 ], //first column
+    //         "visible": onecolumn,
+    //     }
+    // ],
           dom: 'lBfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'

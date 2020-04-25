@@ -465,6 +465,8 @@ class ComposerStaticInit1204a6d7ac02c79626d220b20c14dffc
         'App\\Models\\Country' => __DIR__ . '/../..' . '/app/Models/Country.php',
         'App\\Models\\State' => __DIR__ . '/../..' . '/app/Models/State.php',
         'App\\Models\\Zone' => __DIR__ . '/../..' . '/app/Models/Zone.php',
+        'App\\Ntrax\\Repositories\\ChannelPartner\\ChannelPartnerInterface' => __DIR__ . '/../..' . '/app/Ntrax/Repositories/ChannelPartner/ChannelPartnerInterface.php',
+        'App\\Ntrax\\Repositories\\ChannelPartner\\ChannelPartnerRepository' => __DIR__ . '/../..' . '/app/Ntrax/Repositories/ChannelPartner/ChannelPartnerRepository.php',
         'App\\Ntrax\\Repositories\\Permission\\PermissionInterface' => __DIR__ . '/../..' . '/app/Ntrax/Repositories/Permission/PermissionInterface.php',
         'App\\Ntrax\\Repositories\\Permission\\PermissionRepository' => __DIR__ . '/../..' . '/app/Ntrax/Repositories/Permission/PermissionRepository.php',
         'App\\Ntrax\\Repositories\\Role\\RoleInterface' => __DIR__ . '/../..' . '/app/Ntrax/Repositories/Role/RoleInterface.php',

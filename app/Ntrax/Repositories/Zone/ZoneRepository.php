@@ -7,6 +7,8 @@ use App\Models\Zone;
 use App\Models\Country;
 use App\Models\State;
 use DataTables;
+use Zizaco\Entrust\EntrustFacade as Entrust;
+
 class ZoneRepository implements ZoneInterface
 {
     private $zone;
@@ -77,9 +79,17 @@ class ZoneRepository implements ZoneInterface
                         return $data->updated_at->diffForHumans();
                     })
                     ->addColumn('action', function($data){
-                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="edit btn btn-outline-info btn-rounded waves-effect waves-light"><i class="mdi mdi-square-edit-outline"></i></button>';
+                        $button ='';
+                        // dd(Entrust::can('Edit Zone'));
+                        $editzone = Entrust::can('Edit Zone')? '' : 'disabled';
+                        // if($editzone == 'true'){
+                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="edit btn btn-outline-info btn-rounded waves-effect waves-light" '.$editzone.'><i class="mdi mdi-square-edit-outline"></i></button>';
+                        // }
                         $button .= '&nbsp;&nbsp;';
+                        $deletezone = Entrust::can('Delete Zone')? 'true' : 'false';
+                        if($deletezone == 'true'){
                         $button .= '<button type="button" name="delete" id="'.$data->id.'" class="delete btn btn-outline-danger btn-rounded waves-effect waves-light waves-light"><i class="mdi mdi-delete"></i></button>';
+                        }
                         return $button;
                            
                     })

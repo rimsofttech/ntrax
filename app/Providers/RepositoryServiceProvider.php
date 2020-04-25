@@ -14,6 +14,8 @@ use App\Ntrax\Repositories\Permission\PermissionInterface;
 use App\Ntrax\Repositories\Permission\PermissionRepository;
 use App\Ntrax\Repositories\User\UserInterface;
 use App\Ntrax\Repositories\User\UserRepository;
+use App\Ntrax\Repositories\ChannelPartner\ChannelPartnerInterface;
+use App\Ntrax\Repositories\ChannelPartner\ChannelPartnerRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(RoleInterface::class, RoleRepository::class);
         $this->app->bind(PermissionInterface::class, PermissionRepository::class);
         $this->app->bind(UserInterface::class, UserRepository::class);
+        $this->app->bind(ChannelPartnerInterface::class, ChannelPartnerRepository::class);
 
     }
 
@@ -40,6 +43,7 @@ class RepositoryServiceProvider extends ServiceProvider
             RoleInterface::class,
             PermissionInterface::class,
             UserInterface::class,
+            ChannelPartnerInterface::class,
 
         ];
     }

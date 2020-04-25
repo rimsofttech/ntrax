@@ -2,7 +2,6 @@
 <div class="left-side-menu">
 
     <div class="slimscroll-menu">
-
         <!--- Sidemenu -->
         <div id="sidebar-menu">
 
@@ -24,7 +23,7 @@
                         </li>
                         @endif
                         <li>
-                            <a href="">Dashboard 2</a>
+                            <a href="{{route('channelpartner.index')}}">Channel Partner</a>
                         </li>
                     </ul>
                 </li>

@@ -12,13 +12,13 @@
 */
 
 Route::get('/', function () {
-    return view('/admin/zone/index');
+    return redirect()->intended('/login');
 });
 
 // Route::get('{any}', 'UboldController@index');
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(["prefix" => "admin", "namespace" => "Admin",'middleware' => 'auth'], function () {
 

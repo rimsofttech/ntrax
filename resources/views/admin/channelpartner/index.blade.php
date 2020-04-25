@@ -7,6 +7,7 @@
         <!-- third party css end -->
         <link href="{{ URL::asset('assets/libs/custombox/custombox.min.css')}}" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
+        <title>Ntrax - Channel Partner</title>
 
 @endsection
 
@@ -20,12 +21,12 @@
                                 <div class="page-title-box">
                                     <div class="page-title-right">
                                         <ol class="breadcrumb m-0">
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">UBold</a></li>
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
-                                            <li class="breadcrumb-item active">Datatables</li>
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Masters</a></li>
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Channel Partner</a></li>
+                                            {{-- <li class="breadcrumb-item active">Datatables</li> --}}
                                         </ol>
                                     </div>
-                                    <h4 class="page-title">Datatables</h4>
+                                    <h4 class="page-title">Channel Partner Master</h4>
                                 </div>
                             </div>
                         </div>     
@@ -53,6 +54,7 @@
                                                     <th>Phone</th>
                                                     <th>Additional Phone</th>
                                                     <th>Commission Percentage</th>
+                                                    <th>Channel Partner</th>
                                                     <th>Creted At</th>
                                                     <th>Updated At</th>
                                                     <th>Action</th>
@@ -84,7 +86,7 @@
                             </div>
                             <div class="modal-body">
                                 <span id="form_result"></span>
-                                <form method="post" id="role_form" class="form-horizontal" enctype="multipart/form-data">
+                                <form method="post" id="channelpartner_form" class="form-horizontal" enctype="multipart/form-data">
                                         @csrf
                                     <div class="alert alert-success d-none" id="msg_div">
                                           <span id="res_message"></span>
@@ -127,14 +129,15 @@
                                   </div>
 
                                   <div class="form-group">
-                                    <label for="additionalphone">Commission Percentage in (%)</label>
-                                    <input type="number" class="form-control" name="additionalphone" id="additionalphone" placeholder="Please enter Additional Phone Number">
-                                    <span class="text-danger">{{ $errors->first('additionalphone') }}</span>
+                                    <label for="commissionpercentage">Commission Percentage in (%)</label>
+                                    <input type="number" class="form-control" name="commissionpercentage" id="commissionpercentage" placeholder="Please enter Commission Percentage in (%)">
+                                    <span class="text-danger">{{ $errors->first('commissionpercentage') }}</span>
                                   </div>
 
                                   <div class="form-group">
-                                      <label for="channeltype">Select Channel Type</label>
-                                      <select class="form-control select2-multiple permission-select2" data-toggle="select2" data-placeholder="Choose Channel Type..." id="channeltype" name="channeltype[]" style="width:100%">
+                                      <label for="channeltype">Select Channel Partner Type</label>
+                                      <select class="form-control"  data-placeholder="Choose Channel Type..." id="channelpartnertype" name="channelpartnertype" style="width:100%">
+                                        <option value="" disabled>Select Channel Partner Type</option>
                                         <option value="1">A</option>
                                         <option value="2">B</option>
                                         <option value="3">C</option>
@@ -213,10 +216,10 @@
          $('.fetchdata').DataTable({
           processing: true,
           serverSide: true,
-          responsive: true,
           bDestroy: true,
+          scrollX: true,
           ajax:{
-           url: "{{ route('role.index') }}",
+           url: "{{ route('channelpartner.index') }}",
           },
         //   data: data,
           columns:[
@@ -226,29 +229,49 @@
 
             },
             {
-            data: 'name',
-             name:'name'
+                data : 'name',
+                name : 'name'
            },
            {
-            data: 'display_name',
-             name:'display_name'
+                data : 'company_name',
+                name : 'company_name'
            },
-           { data: 'description',
-                name:'description'
+           {
+                data : 'email',
+                name : 'email'
+           },
+            {   data : 'addn_email',
+                name : 'addn_email'
             },
            {
-            data: 'created_at',
-            name: 'created_at'
+                data : 'phone',
+                name : 'phone'
            },
            {
-            data: 'updated_at',
-            name: 'updated_at'
+                data : 'addn_phone',
+                name : 'addn_phone'
            },
            {
-            data: 'action',
-            name: 'action',
-            rderable: false,
-            searchable: false
+                data : 'commission_percentage',
+                name : 'commission_percentage'
+           },
+           {
+                data : 'partner_type',
+                name : 'partner_type'
+           },
+           {
+                data : 'created_at',
+                name : 'created_at'
+           },
+           {
+                data : 'updated_at',
+                name : 'updated_at'
+           },
+           {
+                data : 'action',
+                name : 'action',
+                rderable: false,
+                searchable: false
            }
           ],
           dom: 'lBfrtip',
@@ -258,17 +281,20 @@
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
          });
          $('#create_record').click(function(){
-            $('#rolename').val('');
-            $('#displayname').val('');
-            $('#description').val('');
-            $(".permission-select2 option:selected").attr('selected',false).trigger('change');
+            $('#name').val('');
+            $('#companyname').val('');
+            $('#email').val('');
+            $('#additionalemail').val('');
+            $('#phone').val('');
+            $('#additionalphone').val('');
+            $('#channelpartnertype option[value=""]').attr('selected', true);
+            $('#commissionpercentage').val('');
             $('.modal-title').text("Add New Record");
             $('#action_button').val("Add");
             $('#action').val("Add");
             $('#formModal').modal('show');
         });
-
-        $('#role_form').on('submit', function(event){
+        $('#channelpartner_form').on('submit', function(event){
             event.preventDefault();
             if($('#action').val() == 'Add')
             {
@@ -305,13 +331,17 @@
                     closeButton:true,
                     progressBar:true,
                 });
-                $('#role_form')[0].reset();
+                $('#channelpartner_form')[0].reset();
                 $('.fetchdata').DataTable().ajax.reload();
-                $('#rolename').val('');
-                $('#displayname').val('');
-                $('#description').val('');
-                $(".permission-select2 option:selected").attr('selected',false).trigger('change');
-
+                $('#name').val('');
+                $('#companyname').val('');
+                $('#email').val('');
+                $('#additionalemail').val('');
+                $('#phone').val('');
+                $('#additionalphone').val('');
+                $('#additionalphone').val();
+                $('#commissionpercentage').val('');
+                $('#channelpartnertype option[value=""]').attr('selected', true);
                 }
                 setTimeout(function(){
                 $("#action_button").css("display","block");
@@ -354,7 +384,7 @@
                 closeButton:true,
                 progressBar:true,
             });
-            // $('#role_form')[0].reset();
+            // $('#channelpartner_form')[0].reset();
             $('.fetchdata').DataTable().ajax.reload();
             }
             $("#action_button").css("display","block");
@@ -364,27 +394,28 @@
         });
         }   
         });
-
-       
         $(document).on('click', '.edit', function(){
-            $('#rolename').val('');
-            $('#displayname').val('');
-            $('#description').val('');
-            $(".permission-select2 option:selected").attr('selected',false).trigger('change');
+            $('#name').val('');
+            $('#companyname').val('');
+            $('#email').val('');
+            $('#additionalemail').val();
+            $('#phone').val();
+            $('#additionalphone').val();
+            $("#channelpartnertype option:selected").attr('selected',false).trigger('change');
             var id = $(this).attr('id');
             $('#form_result').html('');
             $.ajax({
             url:"/admin/channelpartner/"+id+"/edit",
             dataType:"json",
             success:function(html){
-                $('#rolename').val(html.data.name);
-                $('#displayname').val(html.data.display_name);
-                $('#description').val(html.data.description);
-                var htmlText='';
-                $.each(html.data.permissions, function(key, val) {
-                    htmlText +="<option value="+html.data.permissions[key].id+" selected>"+html.data.permissions[key].name+"</option>";
-                })
-                $('.permission-select2').append(htmlText).trigger('change');
+                $('#name').val(html.data.name);
+                $('#companyname').val(html.data.company_name);
+                $('#email').val(html.data.email);
+                $('#additionalemail').val(html.data.addn_email);
+                $('#phone').val(html.data.phone);
+                $('#additionalphone').val(html.data.addn_phone)
+                $('#commissionpercentage').val(html.data.commission_percentage);
+                $('#channelpartnertype option[value='+html.data.partner_type+']').attr('selected', true);
                 $('#hidden_id').val(html.data.id);
                 $('.modal-title').text("Edit New Record");
                 $('#action_button').val("Edit");
@@ -396,7 +427,7 @@
             var user_id;
 
             $(document).on('click', '.delete', function(){
-            role_id = $(this).attr('id');
+            channelpartner_id = $(this).attr('id');
             $('#ok_button').text('Ok');
             $("#ok_button").css("display","block");
             $("#ok_button1").css("display","none");
@@ -405,7 +436,7 @@
 
             $('#ok_button').click(function(){
             $.ajax({
-            url:"/admin/channelpartner/destroy/"+role_id,
+            url:"/admin/channelpartner/destroy/"+channelpartner_id,
             beforeSend:function(){
                 $("#ok_button").css("display","none");
                 $("#ok_button1").css("display","block");
@@ -436,6 +467,7 @@
             }
             })
             });
+          
         });
         </script>
      
