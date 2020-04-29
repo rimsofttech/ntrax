@@ -8,8 +8,13 @@
         <link href="{{ URL::asset('assets/libs/custombox/custombox.min.css')}}" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
         <title>Ntrax - Zone Master</title>
-
-
+        <link href="{{ URL::asset('assets/libs/jquery-toast/jquery-toast.min.css')}}" rel="stylesheet" type="text/css" />
+        <style>
+            .floatRight {
+            float: right;
+            margin-left:10px;
+            }
+        </style>
 @endsection
 
 @section('content')
@@ -39,11 +44,18 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                @permission('Create Zone')
-                                                <button type="button" class="btn btn-primary" data-toggle="modal"  name="create_record" id="create_record">
+                                            @php  
+                                                $createzone = ''; 
+                                                $createtext = '';
+                                                if(!Entrust::can('Create Zone'))
+                                                {
+                                                    $createzone = ''; 
+                                                    $createtext = 'You dont Have permission To Create';
+                                                }
+                                            @endphp
+                                            {{-- <button type="button" class="btn btn-primary" data-toggle="modal"  name="create_record" id="create_record" title="{{$createtext}}" {{$createzone }}>
                                                     <i class="mdi mdi-plus-circle mr-1"></i> Add Zone
-                                                  </button>
-                                                @endpermission
+                                                  </button> --}}
                                             </div>
                                         </div>
                                         <div class="row">&nbsp;</div>
@@ -122,8 +134,12 @@
                                   <input type="hidden" name="hidden_id" id="hidden_id" />
                             </div>
                             <div class="modal-footer">
-                              <button type="button" class="btn btn-outline-danger btn-rounded waves-effect waves-light" data-dismiss="modal">Close</button>
-                              <input type="submit" name="action_button" id="action_button" class="btn btn-outline-success btn-rounded waves-effect waves-light" value="Add" />
+                                <button type="button" class="btn btn-outline-danger btn-rounded waves-effect waves-light" data-dismiss="modal">Close</button>
+                                <input type="submit" name="action_button" id="action_button" class="btn btn-outline-success btn-rounded waves-effect waves-light" value="Add" style="display:block" />
+                                <button class="btn btn-outline-danger btn-rounded waves-effect waves-light" id="action_buttonone" type="button" disabled style="display:none">
+                                  <span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"></span><span id="a_button1">
+                                  Updating...<span>
+                              </button> 
                             </form>
 
                             </div>
@@ -236,9 +252,11 @@
        
        <script>
         $(document).ready(function(){
-        //  var onecolumn =   {{ \Entrust::can('Edit Zone') ? 'true' : 'false' }};
-        //  alert(onecolumn);
-         $('.fetchdata').DataTable({
+            var datatable = '';
+         var reportdatatable =   "{{ Entrust::can('Reporting Zone') ? 'true' : 'false' }}";
+         var addzonecheck = "{{ Entrust::can('Create Zone') ? 'true' : 'false' }}";
+        
+        var datatable = $('.fetchdata').DataTable({
           processing: true,
           serverSide: true,
           responsive: true,
@@ -246,7 +264,6 @@
           ajax:{
            url: "{{ route('zone.index') }}",
           },
-        //   data: data,
         
           columns:[
            {
@@ -291,18 +308,53 @@
     // ],
           dom: 'lBfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                //  'excel''delete'
+                {
+                text: '<i class="fas fa-sync-alt"></i>',
+                className:'btn btn-info',
+                attr:{
+                    title:'Reload Data'
+                },
+                action: function () {
+                    datatable.ajax.reload();
+                },
+                
+            },
             ],
+            
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
          });
+         
+
+         if ( reportdatatable != 'false') {
+            datatable.button().add(null, {extend: ['copy'],className:'btn btn-warning',text:'<i class="fe-copy"></i>',attr:{title:'Copy'}});
+            datatable.button().add(null, {extend: ['csv'],className:'btn btn-success',text:'<i class="fas fa-file-csv"></i>',attr:{title:'Generate CSV'}});
+            datatable.button().add(null, {extend: ['excel'],className:'btn btn-primary',text:'<i class=" mdi mdi-file-excel"></i>',attr:{title:'Generate Excel'}});
+            datatable.button().add(null, {extend: ['print'],className:'btn btn-pink',text:'<i class="mdi mdi-printer"></i>',attr:{title:'Print'}});
+            datatable.button().add(null, {extend: ['pdf'],className:'btn btn-danger',text:'<i class="mdi mdi-file-pdf"></i>',attr:{title:'Generate PDF'}});
+        }
+        var erroraddcheck = '';
+        if(addzonecheck!='true')
+        {
+            erroraddcheck = 'You do not have proper permission to Create Record';
+        }
+        datatable.button().add(null, {className:'btn btn-danger',text:'<i class="mdi mdi-plus-circle mr-1"></i> Add Zone',className:'btn btn-success floatRight align-right',attr:{title:erroraddcheck,id:'create_record'}});
          $('#create_record').click(function(){
+            var createzone = "{{Entrust::can('Create Zone')? true : false }}";
+                if(createzone != true)
+                {
+                    unauthorized();
+                    return false;
+                }
             $('#zonename').val('');
-            $(".country-select2 option:selected").attr('selected',false).trigger('change');
-            $(".state-select2 option:selected").attr('selected',false).trigger('change');
-            $(".city-select2 option:selected").attr('selected',false).trigger('change');
+            $(".country-select2").val('').trigger("change");
+            $(".state-select2").val('').trigger("change");
+            $(".city-select2").val('').trigger("change");
             $('.modal-title').text("Add New Record");
             $('#action_button').val("Add");
             $('#action').val("Add");
+            $("#action_button").css("display","block");
+            $("#action_buttonone").css("display","none");
             $('#formModal').modal('show');
         });
 
@@ -318,26 +370,60 @@
                 cache:false,
                 processData: false,
                 dataType:"json",
+                beforeSend:function(){
+                $("#action_button").css("display","none");
+                $("#a_button1").text("Adding...");
+                $("#action_buttonone").css("display","block");
+                },
                 success:function(data)
                 {
-                var html = '';
-                if(data.errors)
-                {
-                html = '<div class="alert alert-danger">';
-                for(var count = 0; count < data.errors.length; count++)
-                {
-                html += '<p>' + data.errors[count] + '</p>';
-                }
-                html += '</div>';
-                }
                 if(data.success)
                 {
-                html = '<div class="alert alert-success">' + data.success + '</div>';
+                    toastr.success(''+data.success+'','Success',{
+                    closeButton:true,
+                    progressBar:true,
+                });
                 $('#zone_form')[0].reset();
-                $('.fetchdata').DataTable().ajax.reload();
+                $(".country-select2").val('').trigger("change");
+                $(".state-select2").val('').trigger("change");
+                $(".city-select2").val('').trigger("change");
+                datatable.ajax.reload();
                 }
-                $('#form_result').html(html);
+                setTimeout(function(){
+                $("#action_button").css("display","block");
+                $("#action_buttonone").css("display","none");
+                }, 3000);
+                },error: function (jqXHR, exception) {
+                setTimeout(function(){
+                $("#action_button").css("display","block");
+                $("#action_buttonone").css("display","none");
+                }, 3000);
+                 var msg = '';
+                if (jqXHR.status === 0) {
+                    msg = 'Not connect.\n Verify Network.';
+                } else if (exception === 'timeout') {
+                    msg = 'Time out error.';
                 }
+                else if (jqXHR.status == 403){
+                    unauthorized();
+                    return false;
+                }
+                 else if(jqXHR.responseJSON.errors){
+                    $.each(jqXHR.responseJSON.errors, function(key, val) {
+                        toastr.error(''+val+'','Error',{
+                        closeButton:true,
+                        progressBar:true,
+                        });
+                    });
+                    return false;
+                }
+                else{
+                    msg = "Something Went Wrong please try agian, Or Reload page and try";
+                    
+                }
+                $.NotificationApp.send(msg,"Yes! check this <a href='https://github.com/kamranahmedse/jquery-toast-plugin/commits/master'>To Report Error</a>.",'top-right', '#bf441d', 'error', 8000, 100, 'fade');
+                
+            }
             })
             }
             if($('#action').val() == "Edit")
@@ -351,34 +437,80 @@
             cache: false,
             processData: false,
             dataType:"json",
+            beforeSend:function(){
+                $("#action_button").css("display","none");
+                $("#a_button1").text("Updating...");
+                $("#action_buttonone").css("display","block");
+                },
             success:function(data)
             {
-            var html = '';
             if(data.errors)
             {
-            html = '<div class="alert alert-danger">';
-            for(var count = 0; count < data.errors.length; count++)
-            {
-            html += '<p>' + data.errors[count] + '</p>';
-            }
-            html += '</div>';
+                $.each(data.errors, function(key, val) {
+                        toastr.error(''+data.errors[key]+'','Error',{
+                        closeButton:true,
+                        progressBar:true,
+                    });
+                });
             }
             if(data.success)
             {
-            html = '<div class="alert alert-success">' + data.success + '</div>';
-            $('#zone_form')[0].reset();
-            $('.fetchdata').DataTable().ajax.reload();
+                toastr.success(''+data.success+'','Success',{
+                    closeButton:true,
+                    progressBar:true,
+                });
+                datatable.ajax.reload();
             }
-            $('#form_result').html(html);
+            setTimeout(function(){
+                $("#action_button").css("display","block");
+                $("#action_buttonone").css("display","none");
+                }, 3000);
+            },error: function (jqXHR, exception) {
+                setTimeout(function(){
+                $("#action_button").css("display","block");
+                $("#action_buttonone").css("display","none");
+                }, 3000);
+                 var msg = '';
+                if (jqXHR.status === 0) {
+                    msg = 'Not connect.\n Verify Network.';
+                } else if (exception === 'timeout') {
+                    msg = 'Time out error.';
+                }
+                else if (jqXHR.status == 403){
+                    unauthorized();
+                    return false;
+                }
+                 else if(jqXHR.responseJSON.errors){
+                    $.each(jqXHR.responseJSON.errors, function(key, val) {
+                        toastr.error(''+val+'','Error',{
+                        closeButton:true,
+                        progressBar:true,
+                        });
+                    });
+                    return false;
+                }
+                else{
+                    msg = "Something Went Wrong please try agian, Or Reload page and try";
+                    
+                }
+                $.NotificationApp.send(msg,"Yes! check this <a href='https://github.com/kamranahmedse/jquery-toast-plugin/commits/master'>To Report Error</a>.",'top-right', '#bf441d', 'error', 8000, 100, 'fade');
+                
             }
         });
         }   
         });
         $(document).on('click', '.edit', function(){
+            var editezone = "{{Entrust::can('Edit Zone')? true : false }}";
+                if(editezone != true)
+                {
+                    unauthorized();
+                    return false;
+
+                }
             $('#zonename').val('');
-            $(".country-select2 option:selected").attr('selected',false).trigger('change');
-            $(".state-select2 option:selected").attr('selected',false).trigger('change');
-            $(".city-select2 option:selected").attr('selected',false).trigger('change');
+            $(".country-select2").val('').trigger("change");
+            $(".state-select2").val('').trigger("change");
+            $(".city-select2").val('').trigger("change");
             var id = $(this).attr('id');
             $('#form_result').html('');
             $.ajax({
@@ -408,11 +540,19 @@
             }
             })
             });
-            var user_id;
+            var zone_id;
 
             $(document).on('click', '.delete', function(){
+                var deletezone = "{{Entrust::can('Delete Zone')? true : false }}";
+                if(deletezone != true)
+                {
+                    unauthorized();
+                    return false;
+                }
             zone_id = $(this).attr('id');
             $('#ok_button').text('Ok');
+            $("#ok_button").css("display","block")
+            $("#ok_button1").css("display","none")
             $('#confirmModal').modal('show');
             });
 
@@ -422,19 +562,58 @@
             beforeSend:function(){
                 $("#ok_button").css("display","none")
                 $("#ok_button1").css("display","block")
-            $('#ok_button').text('Deleting...');
+                $('#ok_button').text('Deleting...');
             },
             success:function(data)
             {
+                if(data.errors)
+            {
+                toastr.error(''+data.errors+'','Warning',{
+                closeButton:true,
+                progressBar:true,
+                });
+            }
+            if(data.success)
+            {
+                toastr.success(''+data.success+'','Success',{
+                closeButton:true,
+                progressBar:true,
+                });
+            }
             setTimeout(function(){
                 $('#confirmModal').modal('hide');
-                $('.fetchdata').DataTable().ajax.reload();
+                datatable.ajax.reload();
             }, 2000);
+            },error: function (jqXHR, exception) {
+                $('#confirmModal').modal('hide');
+                var msg = '';
+                if (jqXHR.status === 0) {
+                    msg = 'Not connect.\n Verify Network.';
+                } else if (exception === 'timeout') {
+                    msg = 'Time out error.';
+                }
+                else if (jqXHR.status == 403){
+                    unauthorized();
+                    return false;
+                }
+                else{
+                    msg = "Something Went Wrong please try agian, Or Reload page and try";
+                    
+                }
+                $.NotificationApp.send(msg,"Yes! check this <a href='https://github.com/kamranahmedse/jquery-toast-plugin/commits/master'>To Report Error</a>.",'top-right', '#bf441d', 'error', 8000, 100, 'fade');
             }
             })
             });
+            function unauthorized()
+            {
+                $.NotificationApp.send("You Are not unauthorized to do this action.", "Yes! check this <a href='https://github.com/kamranahmedse/jquery-toast-plugin/commits/master'>To Request For Approval</a>.",'top-right', '#bf441d', 'error', 8000, 100, 'fade');
+            }
         });
         </script>
-     
+      <!-- Tost-->
+      <script src="{{ URL::asset('assets/libs/jquery-toast/jquery-toast.min.js')}}"></script>
+
+      <!-- toastr init js-->
+      <script src="{{ URL::asset('assets/js/pages/toastr.init.js')}}"></script>
  <script src="{{ URL::asset('assets/libs/custombox/custombox.min.js')}}"></script>
 @endsection

@@ -38,6 +38,7 @@ class ZonePolicy
         // return (Entrust::hasRole(['admin','owner','general-user']) && Entrust::can('create-company')) ? true : false;
         return  Entrust::can('Create Zone') ? true : false;
     }
+    
 
     /**
      * @param User $user
@@ -54,7 +55,7 @@ class ZonePolicy
      */
     public function show(User $user)
     {
-        return Entrust::can('Update Zone') ? true : false;
+        return Entrust::can('Show Zone') ? true : false;
     }
 
     /**

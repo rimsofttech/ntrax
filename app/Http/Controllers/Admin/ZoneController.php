@@ -4,14 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Zone\DeleteZoneRequest;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\Zone;
 use App\Ntrax\Repositories\Zone\ZoneInterface;
 use App\Http\Requests\Zone\IndexZoneRequest;
+use App\Http\Requests\Zone\StoreZoneRequest;
+use App\Http\Requests\Zone\UpdateZoneRequest;
 use DataTables;
+use Illuminate\Support\Facades\DB;
 use Validator;
+use Zizaco\Entrust\EntrustFacade as Entrust;
 
 class ZoneController extends Controller
 {
@@ -98,25 +103,32 @@ class ZoneController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreZoneRequest $request)
     {
         // dd($request->all());
-        $rules = array(
-            'zonename'    =>  'required',
-            'country'     =>  'required',
-            'state'       =>  'required',
-            'city'        =>'required'
-        );
+        // $rules = array(
+        //     'zonename'    =>  'required',
+        //     'country'     =>  'required',
+        //     'state'       =>  'required',
+        //     'city'        =>'required'
+        // );
 
-        $error = Validator::make($request->all(), $rules);
+        // $error = Validator::make($request->all(), $rules);
 
-        if($error->fails())
-        {
-            return response()->json(['errors' => $error->errors()->all()]);
-        }
-
+        // if($error->fails())
+        // {
+        //     return response()->json(['errors' => $error->errors()->all()]);
+        // }
+        DB::beginTransaction();
+        try{
+            DB::commit();
         $savezone = $this->zone->storezone($request);
         return response()->json(['success' => 'Data Added successfully.']);
+        }  catch (\Exception $e) {
+            DB::rollBack();
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Failed to Add');
+        }
        
     }
 
@@ -153,24 +165,20 @@ class ZoneController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(UpdateZoneRequest $request)
     {
-        $rules = array(
-            'zonename'    =>  'required',
-            'country'     =>  'required',
-            'state'       =>  'required',
-            'city'        =>  'required'
-        );
-
-        $error = Validator::make($request->all(), $rules);
-
-        if($error->fails())
-        {
-            return response()->json(['errors' => $error->errors()->all()]);
+        DB::beginTransaction();
+        try{
+            $savezone = $this->zone->updatezone($request);
+            DB::commit();
+            return response()->json(['success' => 'Data is successfully updated.']);
+        }  catch (\Exception $e) {
+            DB::rollBack();
+            logger($e->getMessage());
+            return redirect()->back()->with('error', 'Update failed');
         }
 
-        $savezone = $this->zone->updatezone($request);
-        return response()->json(['success' => 'Data is successfully updated.']);
+        
        
     }
 
@@ -182,7 +190,12 @@ class ZoneController extends Controller
      */
     public function destroy($id)
     {
+        if(Entrust::can('Delete Zone') ? 'true' : 'false' != 'false')
+        {
         $data = $this->zone->destroyzone($id);
         return response()->json(['success'=>'Zone deleted successfully.']);
+        } else {
+            return response()->json(['errors'=>'You Dont Have Permission to Delete.']);
+        }
     }
 }
