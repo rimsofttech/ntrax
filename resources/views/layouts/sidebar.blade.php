@@ -22,9 +22,31 @@
                             <a href="{{route('zone.index')}}">Zone Master</a>
                         </li>
                         @endif
+                        @if(Auth::user()->can('List ChannelPartner'))
                         <li>
                             <a href="{{route('channelpartner.index')}}">Channel Partner</a>
                         </li>
+                        @endif
+                        @if(Auth::user()->can('List ChannelPartnerType'))
+                        <li>
+                            <a href="{{route('channelpartnertype.index')}}">Channel PartnerType</a>
+                        </li>
+                        @endif
+                        @if(Auth::user()->can('List Product'))
+                        <li>
+                            <a href="{{route('product.index')}}">Product</a>
+                        </li>
+                        @endif
+                        @if(Auth::user()->can('List SubProduct'))
+                        <li>
+                            <a href="{{route('subproduct.index')}}">SubProduct</a>
+                        </li>
+                        @endif
+                        @if(Auth::user()->can('List SubSubProduct'))
+                        <li>
+                            <a href="{{route('subsubproduct.index')}}">SubSubProduct</a>
+                        </li>
+                        @endif
                     </ul>
                 </li>
                 @if(Auth::user()->hasRole(['Owner','Admin']))

@@ -80,16 +80,14 @@ class ZoneRepository implements ZoneInterface
                     })
                     ->addColumn('action', function($data){
                         $button ='';
-                        // dd(Entrust::can('Edit Zone'));
-                        $editzone = Entrust::can('Edit Zone')? '' : 'disabled';
-                        // if($editzone == 'true'){
-                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="edit btn btn-outline-info btn-rounded waves-effect waves-light" '.$editzone.'><i class="mdi mdi-square-edit-outline"></i></button>';
+                        $editzone = Entrust::can('Edit Zone')? 'edit' : 'edit';
+                        $edit_text = Entrust::can('Edit Zone')? '' : 'Yo dont have Permission To Edit';
+                        $button = '<button type="button" name="edit" id="'.$data->id.'" class="'.$editzone.' btn btn-outline-info btn-rounded waves-effect waves-light" title="'.$edit_text.'" '.$editzone.'><i class="mdi mdi-square-edit-outline"></i></button>';
                         // }
                         $button .= '&nbsp;&nbsp;';
-                        $deletezone = Entrust::can('Delete Zone')? 'true' : 'false';
-                        if($deletezone == 'true'){
-                        $button .= '<button type="button" name="delete" id="'.$data->id.'" class="delete btn btn-outline-danger btn-rounded waves-effect waves-light waves-light"><i class="mdi mdi-delete"></i></button>';
-                        }
+                        $deletezone = Entrust::can('Delete Zone')? 'delete' : 'delete';
+                        $delete_text = Entrust::can('Edit Zone')? '' : 'Yo dont have Permission To Delete';
+                        $button .= '<button type="button" name="delete" id="'.$data->id.'" class="'.$deletezone.' btn btn-outline-danger btn-rounded waves-effect waves-light waves-light" title="'.$delete_text.'"><i class="mdi mdi-delete"></i></button>';
                         return $button;
                            
                     })

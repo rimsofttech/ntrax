@@ -8,6 +8,13 @@
         <link href="{{ URL::asset('assets/libs/custombox/custombox.min.css')}}" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
         <title>Ntrax - Channel Partner</title>
+        <link href="{{ URL::asset('assets/libs/jquery-toast/jquery-toast.min.css')}}" rel="stylesheet" type="text/css" />
+        <style>
+            .floatRight {
+            float: right;
+            margin-left:10px;
+            }
+        </style>
 
 @endsection
 
@@ -37,9 +44,18 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                <button type="button" class="btn btn-primary" data-toggle="modal"  name="create_record" id="create_record">
+                                                @php  
+                                                $createchannelpartner = ''; 
+                                                $createtext = '';
+                                                if(!Entrust::can('Create ChannelPartner'))
+                                                {
+                                                    $createchannelpartner = ''; 
+                                                    $createtext = 'You dont Have permission To Create';
+                                                }
+                                            @endphp
+                                                {{-- <button type="button" class="btn btn-primary" data-toggle="modal"  name="create_record" id="create_record">
                                                     <i class="mdi mdi-plus-circle mr-1"></i> Add Channel Partner
-                                                  </button>
+                                                  </button> --}}
                                             </div>
                                         </div>
                                         <div class="row">&nbsp;</div>
@@ -54,8 +70,8 @@
                                                     <th>Phone</th>
                                                     <th>Additional Phone</th>
                                                     <th>Commission Percentage</th>
-                                                    <th>Channel Partner</th>
-                                                    <th>Creted At</th>
+                                                    <th>Channel Partner Type</th>
+                                                    <th>Created At</th>
                                                     <th>Updated At</th>
                                                     <th>Action</th>
                                                 </tr>
@@ -137,10 +153,7 @@
                                   <div class="form-group">
                                       <label for="channeltype">Select Channel Partner Type</label>
                                       <select class="form-control"  data-placeholder="Choose Channel Type..." id="channelpartnertype" name="channelpartnertype" style="width:100%">
-                                        <option value="" disabled>Select Channel Partner Type</option>
-                                        <option value="1">A</option>
-                                        <option value="2">B</option>
-                                        <option value="3">C</option>
+                                      
                                     </select>
                                   </div>
                                   <input type="hidden" name="action" id="action" />
@@ -196,10 +209,10 @@
        
        <script>
         $(document).ready(function(){
-            $(".permission-select2").select2({
+            $("#channelpartnertype").select2({
             ajax: {
                 url: function (params) {
-                    return "{{route('search.permission')}}";
+                    return "{{route('search.channelpartnertype')}}";
                 },
                 dataType: 'json',
                 delay: 250,
@@ -213,7 +226,14 @@
             },
             // minimumInputLength: 3,
         });
-         $('.fetchdata').DataTable({
+    });
+        </script>
+         <script>
+            $(document).ready(function(){
+                var datatable = '';
+         var reportdatatable =   "{{ Entrust::can('Reporting Zone') ? 'true' : 'false' }}";
+         var addchannelpartnercheck = "{{ Entrust::can('Create ChannelPartner') ? 'true' : 'false' }}";
+         datatable = $('.fetchdata').DataTable({
           processing: true,
           serverSide: true,
           bDestroy: true,
@@ -276,11 +296,40 @@
           ],
           dom: 'lBfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                {
+                text: '<i class="fas fa-sync-alt"></i>',
+                className:'btn btn-info',
+                attr:{
+                    title:'Reload Data'
+                },
+                action: function () {
+                    datatable.ajax.reload();
+                },
+                
+            },
             ],
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
          });
+         if ( reportdatatable != 'false') {
+            datatable.button().add(null, {extend: ['copy'],className:'btn btn-warning',text:'<i class="fe-copy"></i>',attr:{title:'Copy'}});
+            datatable.button().add(null, {extend: ['csv'],className:'btn btn-success',text:'<i class="fas fa-file-csv"></i>',attr:{title:'Generate CSV'}});
+            datatable.button().add(null, {extend: ['excel'],className:'btn btn-primary',text:'<i class=" mdi mdi-file-excel"></i>',attr:{title:'Generate Excel'}});
+            datatable.button().add(null, {extend: ['print'],className:'btn btn-pink',text:'<i class="mdi mdi-printer"></i>',attr:{title:'Print'}});
+            datatable.button().add(null, {extend: ['pdf'],className:'btn btn-danger',text:'<i class="mdi mdi-file-pdf"></i>',attr:{title:'Generate PDF'}});
+        }
+        var erroraddcheck = '';
+        if(addchannelpartnercheck!='true')
+        {
+            erroraddcheck = 'You do not have proper permission to Create Record';
+        }
+        datatable.button().add(null, {className:'btn btn-danger',text:'<i class="mdi mdi-plus-circle mr-1"></i> Add ChannelPartner',className:'btn btn-success floatRight align-right',attr:{title:erroraddcheck,id:'create_record'}});
          $('#create_record').click(function(){
+            var createchannelpartner = "{{Entrust::can('Create ChannelPartner')? true : false }}";
+                if(createchannelpartner != true)
+                {
+                    unauthorized();
+                    return false;
+                }
             $('#name').val('');
             $('#companyname').val('');
             $('#email').val('');
@@ -313,18 +362,6 @@
                 },
                 success:function(data)
                 {
-                    
-                    
-                var html = '';
-                if(data.errors)
-                {
-                    $.each(data.errors, function(key, val) {
-                        toastr.error(''+data.errors[key]+'','Error',{
-                        closeButton:true,
-                        progressBar:true,
-                    });
-                });
-                }
                 if(data.success)
                 {
                     toastr.success(''+data.success+'','Success',{
@@ -347,7 +384,37 @@
                 $("#action_button").css("display","block");
                 $("#action_buttonone").css("display","none");
                 }, 3000);
+                },error: function (jqXHR, exception) {
+                setTimeout(function(){
+                $("#action_button").css("display","block");
+                $("#action_buttonone").css("display","none");
+                }, 3000);
+                 var msg = '';
+                if (jqXHR.status === 0) {
+                    msg = 'Not connect.\n Verify Network.';
+                } else if (exception === 'timeout') {
+                    msg = 'Time out error.';
                 }
+                else if (jqXHR.status == 403){
+                    unauthorized();
+                    return false;
+                }
+                 else if(jqXHR.responseJSON.errors){
+                    $.each(jqXHR.responseJSON.errors, function(key, val) {
+                        toastr.error(''+val+'','Error',{
+                        closeButton:true,
+                        progressBar:true,
+                        });
+                    });
+                    return false;
+                }
+                else{
+                    msg = "Something Went Wrong please try agian, Or Reload page and try";
+                    
+                }
+                $.NotificationApp.send(msg,"Yes! check this <a href='https://github.com/kamranahmedse/jquery-toast-plugin/commits/master'>To Report Error</a>.",'top-right', '#bf441d', 'error', 8000, 100, 'fade');
+                
+            }
             })
             }
             if($('#action').val() == "Edit")
@@ -368,7 +435,7 @@
                 },
             success:function(data)
             {
-            var html = '';
+            
             if(data.errors)
             {
                 $.each(data.errors, function(key, val) {
@@ -384,17 +451,57 @@
                 closeButton:true,
                 progressBar:true,
             });
+            datatable.ajax.reload();
             // $('#channelpartner_form')[0].reset();
-            $('.fetchdata').DataTable().ajax.reload();
+            //$('.fetchdata').DataTable().ajax.reload();
             }
+            setTimeout(function(){
             $("#action_button").css("display","block");
             $("#action_buttonone").css("display","none");
             // $('#formModal').modal('hide');
+                }, 3000);
+            },error: function (jqXHR, exception) {
+                setTimeout(function(){
+                $("#action_button").css("display","block");
+                $("#action_buttonone").css("display","none");
+                }, 3000);
+                 var msg = '';
+                if (jqXHR.status === 0) {
+                    msg = 'Not connect.\n Verify Network.';
+                } else if (exception === 'timeout') {
+                    msg = 'Time out error.';
+                }
+                else if (jqXHR.status == 403){
+                    unauthorized();
+                    return false;
+                }
+                 else if(jqXHR.responseJSON.errors){
+                    $.each(jqXHR.responseJSON.errors, function(key, val) {
+                        toastr.error(''+val+'','Error',{
+                        closeButton:true,
+                        progressBar:true,
+                        });
+                    });
+                    return false;
+                }
+                else{
+                    msg = "Something Went Wrong please try agian, Or Reload page and try";
+                    
+                }
+                $.NotificationApp.send(msg,"Yes! check this <a href='https://github.com/kamranahmedse/jquery-toast-plugin/commits/master'>To Report Error</a>.",'top-right', '#bf441d', 'error', 8000, 100, 'fade');
+                
             }
         });
         }   
         });
         $(document).on('click', '.edit', function(){
+            var editechannelpartner = "{{Entrust::can('Edit ChannelPartner')? true : false }}";
+                if(editechannelpartner != true)
+                {
+                    unauthorized();
+                    return false;
+
+                }
             $('#name').val('');
             $('#companyname').val('');
             $('#email').val('');
@@ -408,6 +515,7 @@
             url:"/admin/channelpartner/"+id+"/edit",
             dataType:"json",
             success:function(html){
+                //console.log(html);
                 $('#name').val(html.data.name);
                 $('#companyname').val(html.data.company_name);
                 $('#email').val(html.data.email);
@@ -415,7 +523,7 @@
                 $('#phone').val(html.data.phone);
                 $('#additionalphone').val(html.data.addn_phone)
                 $('#commissionpercentage').val(html.data.commission_percentage);
-                $('#channelpartnertype option[value='+html.data.partner_type+']').attr('selected', true);
+                $('#channelpartnertype').append("<option value="+html.data.partner_type+" selected>"+html.data.partnertypename+"</option>").trigger('change');
                 $('#hidden_id').val(html.data.id);
                 $('.modal-title').text("Edit New Record");
                 $('#action_button').val("Edit");
@@ -427,6 +535,12 @@
             var user_id;
 
             $(document).on('click', '.delete', function(){
+                var deletechannelpartner = "{{Entrust::can('Delete ChannelPartner')? true : false }}";
+                if(deletechannelpartner != true)
+                {
+                    unauthorized();
+                    return false;
+                }
             channelpartner_id = $(this).attr('id');
             $('#ok_button').text('Ok');
             $("#ok_button").css("display","block");
@@ -446,11 +560,9 @@
             {
                 if(data.errors)
             {
-                $.each(data.errors, function(key, val) {
-                        toastr.error(''+data.errors[key]+'','Error',{
-                        closeButton:true,
-                        progressBar:true,
-                    });
+                toastr.error(''+data.errors+'','Warning',{
+                closeButton:true,
+                progressBar:true,
                 });
             }
             if(data.success)
@@ -458,19 +570,42 @@
                 toastr.success(''+data.success+'','Success',{
                 closeButton:true,
                 progressBar:true,
-            });
+                });
             }
             setTimeout(function(){
                 $('#confirmModal').modal('hide');
                 $('.fetchdata').DataTable().ajax.reload();
             }, 2000);
+            },error: function (jqXHR, exception) {
+                $('#confirmModal').modal('hide');
+                var msg = '';
+                if (jqXHR.status === 0) {
+                    msg = 'Not connect.\n Verify Network.';
+                } else if (exception === 'timeout') {
+                    msg = 'Time out error.';
+                }
+                else if (jqXHR.status == 403){
+                    unauthorized();
+                    return false;
+                }
+                else{
+                    msg = "Something Went Wrong please try agian, Or Reload page and try";
+                    
+                }
+                $.NotificationApp.send(msg,"Yes! check this <a href='https://github.com/kamranahmedse/jquery-toast-plugin/commits/master'>To Report Error</a>.",'top-right', '#bf441d', 'error', 8000, 100, 'fade');
             }
             })
             });
-          
+            function unauthorized()
+            {
+                $.NotificationApp.send("You Are not unauthorized to do this action.", "Yes! check this <a href='https://github.com/kamranahmedse/jquery-toast-plugin/commits/master'>To Request For Approval</a>.",'top-right', '#bf441d', 'error', 8000, 100, 'fade');
+            }
         });
         </script>
-     
+      <script src="{{ URL::asset('assets/libs/jquery-toast/jquery-toast.min.js')}}"></script>
+
+      <!-- toastr init js-->
+      <script src="{{ URL::asset('assets/js/pages/toastr.init.js')}}"></script>
  <script src="{{ URL::asset('assets/libs/custombox/custombox.min.js')}}"></script>
 
 @endsection

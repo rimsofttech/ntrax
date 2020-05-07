@@ -56,4 +56,25 @@ Route::group(["prefix" => "admin", "namespace" => "Admin",'middleware' => 'auth'
     Route::resource('channelpartner','ChannelPartnerController');
     Route::post('channelpartner/update', 'ChannelPartnerController@update')->name('channelpartner.update');
     Route::get('channelpartner/destroy/{id}', 'ChannelPartnerController@destroy');
+    Route::get('/search-channelpartnertype', 'ChannelPartnerController@searchChannelPartnerType')->name('search.channelpartnertype');
+
+    Route::resource('channelpartnertype','ChannelPartnerTypeController');
+    Route::post('channelpartnertype/update', 'ChannelPartnerTypeController@update')->name('channelpartnertype.update');
+    Route::get('channelpartnertype/destroy/{id}', 'ChannelPartnerTypeController@destroy');
+
+    Route::resource('product','ProductController');
+    Route::post('product/update', 'ProductController@update')->name('product.update');
+    Route::get('product/destroy/{id}', 'ProductController@destroy');
+    
+
+    Route::resource('subproduct','SubProductController');
+    Route::post('subproduct/update', 'SubProductController@update')->name('subproduct.update');
+    Route::get('subproduct/destroy/{id}', 'SubProductController@destroy');
+    Route::get('/search-subproduct', 'SubProductController@searchProduct')->name('search.product');
+
+    Route::resource('subsubproduct','SubSubProductController');
+    Route::post('subsubproduct/update', 'SubSubProductController@update')->name('subsubproduct.update');
+    Route::get('subsubproduct/destroy/{id}', 'SubSubProductController@destroy');
+    Route::get('/search-subsubproduct', 'SubSubProductController@searchSubProduct')->name('search.subproduct');
+    
 });

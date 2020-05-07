@@ -1,0 +1,62 @@
+<?php
+
+return [
+
+    'ZONE_101' => 'Zone Name is required',
+    'ZONE_102' => 'Minimum 3 characters are required in Zone name field.',
+    'ZONE_103' => 'Only alphabetic charcters are supported in Zone name field.',
+    'ZONE_104' => 'This Zone Name is already Taken.',
+
+    'CHANNELPARTNER_101' => 'This Channel Partner Name is already Taken.',
+    'CHANNELPARTNER_102' => 'Partner Name is required.',
+    'CHANNELPARTNER_103' => 'Minimum 3 characters are required in Channel Partner Name field.',
+    'CHANNELPARTNER_104' => 'Only alphabetic characters are supported in Channel Partner Name field.',
+    'CHANNELPARTNER_105' => 'Company Name is required.',
+    'CHANNELPARTNER_106' => 'Minimum 3 characters are required in Company Name field.',
+    'CHANNELPARTNER_107' => 'Only alphabetic characters are supported in Company Name field.',
+    'CHANNELPARTNER_108' => 'Email is required.',
+    'CHANNELPARTNER_109' => 'Additional Email is required.',
+    'CHANNELPARTNER_110' => 'Phone is required.',
+    'CHANNELPARTNER_111' => 'Additional Phone is required.',
+    'CHANNELPARTNER_112' => 'Commission Percentage is required.',
+    'CHANNELPARTNER_113' => 'Channel Partner Type is required.',
+    'CHANNELPARTNER_114' => 'Phone must be numeric.',
+    'CHANNELPARTNER_115' => 'Phone number format is invalid.It must be between 7 to 15.',
+    'CHANNELPARTNER_116' => 'Please select correct Channel Partner Type',
+
+    'CHANNELPARTNERTYPE_101' => 'This Channel Partner Type Name is already Taken.',
+    'CHANNELPARTNERTYPE_102' => 'Channel Partner Type Name is required.',
+    'CHANNELPARTNERTYPE_103' => 'Minimum 3 characters are required in Channel Partner Type Name field.',
+    'CHANNELPARTNERTYPE_104' => 'Only alphabetic characters are supported in Channel Partner Type Name field.',
+
+    'PRODUCT_101' => 'This Product Name is already Taken.',
+    'PRODUCT_102' => 'Product Name is required.',
+    'PRODUCT_103' => 'Minimum 3 characters are required in Product Name field.',
+    'PRODUCT_104' => 'Only alphabetic characters are supported in Product Name field.',
+
+    'SUBPRODUCT_101' => 'This Sub Product Name is already Taken.',
+    'SUBPRODUCT_102' => 'Sub Product Name is required.',
+    'SUBPRODUCT_103' => 'Minimum 3 characters are required in Sub Product Name field.',
+    'SUBPRODUCT_104' => 'Only alphabetic characters are supported in Sub Product Name field.',
+    'SUBPRODUCT_105' => 'Please select correct Product',
+
+    'SUBSUBPRODUCT_101' => 'This Sub Sub Product Name is already Taken.',
+    'SUBSUBPRODUCT_102' => 'Sub Sub Product Name is required.',
+    'SUBSUBPRODUCT_103' => 'Minimum 3 characters are required in Sub Sub Product Name field.',
+    'SUBSUBPRODUCT_104' => 'Only alphabetic characters are supported in Sub Sub Product Name field.',
+    'SUBSUBPRODUCT_105' => 'Please select correct SubProduct',
+    'SUBSUBPRODUCT_106' => 'Please select SubProduct Name',
+    'SUBSUBPRODUCT_107' => 'Rate Field is required.',
+    'SUBSUBPRODUCT_108' => 'Minimum 3 characters are required in rate field.',
+    'SUBSUBPRODUCT_109' => 'Only alphabetic characters are supported in rate field.',
+    'SUBSUBPRODUCT_110' => 'Margin Field is required.',
+    'SUBSUBPRODUCT_111' => 'Minimum 3 characters are required in margin field.',
+    'SUBSUBPRODUCT_112' => 'Only alphabetic characters are supported in margin field.',
+    'SUBSUBPRODUCT_113' => 'Max Discount Field is required.',
+    'SUBSUBPRODUCT_114' => 'Minimum 3 characters are required in Max Discount field.',
+    'SUBSUBPRODUCT_115' => 'Only alphabetic characters are supported in Max Discount field.',
+    'SUBSUBPRODUCT_116' => 'Only Numeric characters are supported in Rate field.',
+    'SUBSUBPRODUCT_117' => 'Only Numeric characters are supported in Margin field.',
+    'SUBSUBPRODUCT_118' => 'Only Numeric characters are supported in Max Discount field.',
+   
+];

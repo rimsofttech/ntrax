@@ -161,7 +161,7 @@ function ($) {
     $.NotificationApp.send("", "Set the `hideAfter` property to false and the toast will become sticky.", 'top-right', '#1ea69a', '');
   });
   $("#toastr-eight").on('click', function (e) {
-    $.NotificationApp.send("", "Set the `showHideTransition` property to fade|plain|slide to achieve different transitions.", 'top-right', '#1ea69a', 'info', 3000, 1, 'fade');
+    $.NotificationApp.send("", "Set the `showHideTransition` property to fade|plain|slide to achieve different transitions.", 'top-right', '#1ea69a', 'info', 8000, 10, 'fade');
   });
   $("#toastr-nine").on('click', function (e) {
     $.NotificationApp.send("Slide transition", "Set the `showHideTransition` property to fade|plain|slide to achieve different transitions.", 'top-right', '#1ea69a', 'info', 3000, 1, 'slide');
